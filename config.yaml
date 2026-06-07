@@ -10,15 +10,16 @@ context: >
   
 # Websites to scan
 sites:
+  - https://www.reuters.com/sustainability/climate-energy/
+  - https://www.euractiv.com/sections/emissions-trading-scheme/
   - https://www.ft.com
-  - https://openai.com/news
-  - https://techcrunch.com/category/artificial-intelligence/
+  - https://www.bloomberg.com/green
 
 # Email settings
 email:
   to: motte.stanislas@gmail.com
   from: "News Scanner <onboarding@resend.dev>"  # works without domain setup
-  subject_prefix: "Daily AI News Digest"
+  subject_prefix: "Daily Carbon Markets Digest"
 
 # Claude model to use
 model: claude-sonnet-4-6
