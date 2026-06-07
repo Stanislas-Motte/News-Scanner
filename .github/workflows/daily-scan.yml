@@ -1,0 +1,36 @@
+name: Daily News Scan
+
+on:
+  schedule:
+    - cron: "0 7 * * *"  # 07:00 UTC daily (09:00 Paris in summer)
+  workflow_dispatch: {}   # allows manual runs from the Actions tab
+
+permissions:
+  contents: write  # needed to commit results back
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run scanner
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python scanner.py
+
+      - name: Commit result
+        run: |
+          git config user.name "news-scanner-bot"
+          git config user.email "actions@github.com"
+          git add results/
+          git diff --cached --quiet || git commit -m "Digest $(date -u +%F)"
+          git push

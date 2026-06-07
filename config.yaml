@@ -1,0 +1,24 @@
+# --- Edit this file to control what the scanner does ---
+
+# The context/lens through which news is filtered and summarized
+context: >
+  I am interested in AI developments relevant to product builders:
+  new model releases, API changes, pricing changes, and notable
+  agent/automation use cases. Ignore funding rounds and opinion pieces
+  unless they signal a major shift.
+
+# Websites to scan
+sites:
+  - https://www.anthropic.com/news
+  - https://openai.com/news
+  - https://techcrunch.com/category/artificial-intelligence/
+
+# Email settings
+email:
+  to: motte.stanislas@gmail.com
+  from: "News Scanner <onboarding@resend.dev>"  # works without domain setup
+  subject_prefix: "Daily AI News Digest"
+
+# Claude model to use
+model: claude-sonnet-4-6
+max_tokens: 4000
