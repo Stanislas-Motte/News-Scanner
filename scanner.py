@@ -19,10 +19,9 @@ def load_config() -> dict:
     with open(ROOT / "config.yaml") as f:
         return yaml.safe_load(f)
 
-
 def build_prompt(cfg: dict) -> str:
     sites = "\n".join(f"- {s}" for s in cfg["sites"])
-    return f"""You are a news analyst. Today is {date.today().isoformat()}.
+    return f"""You are a carbon market hedge fund news analyst. Today is {date.today().isoformat()}.
 
 Visit and read the following news sites:
 {sites}
@@ -31,20 +30,20 @@ My context — only report what is relevant to this:
 {cfg["context"]}
 
 Instructions:
-- Fetch each site and look at articles from the last 24-48 hours.
+- Fetch each site and focus on articles from the last 24-48 hours.
 - Summarize ONLY items relevant to my context. Skip everything else.
-- For each relevant item: a bold one-line headline, a 2-3 sentence summary, and a link.
+- Respect the output format in my context.
+- For each relevant item: a bold one-line headline, a 2-3 sentence summary, and a link and a publishing time.
 - If nothing relevant was published, say so explicitly in one line.
 - End with a one-paragraph "Big picture" takeaway if there are 2+ items.
 - Output clean Markdown."""
-
 
 def run_claude(cfg: dict, prompt: str) -> str:
     client = Anthropic()  # uses ANTHROPIC_API_KEY env var
     response = client.messages.create(
         model=cfg["model"],
         max_tokens=cfg["max_tokens"],
-        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 10}],
+        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 20}],
         messages=[{"role": "user", "content": prompt}],
     )
     # Concatenate all text blocks (web search responses interleave tool blocks)
@@ -74,7 +73,6 @@ def send_email(cfg: dict, digest: str) -> None:
     )
     resp.raise_for_status()
     print(f"Email sent: {resp.json().get('id')}")
-
 
 def main() -> None:
     cfg = load_config()
