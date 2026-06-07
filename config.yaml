@@ -2,14 +2,15 @@
 
 # The context/lens through which news is filtered and summarized
 context: >
-  I am interested in AI developments relevant to product builders:
-  new model releases, API changes, pricing changes, and notable
-  agent/automation use cases. Ignore funding rounds and opinion pieces
-  unless they signal a major shift.
-
+  I am interested in all major news that could have an impact on the price of carbon markets.
+  Specifically, I am interested in the European Union Allowances, UK Carbon Allowances.
+  Go through the news outlets mentioned one by one and scan for any news that directly mentions
+  these markets and flag it or any news that could have a second order impact on these markets.
+  For example any news related to the ousting of a prime minister or something massice politically could have a second order impact.
+  
 # Websites to scan
 sites:
-  - https://www.anthropic.com/news
+  - https://www.ft.com
   - https://openai.com/news
   - https://techcrunch.com/category/artificial-intelligence/
 
