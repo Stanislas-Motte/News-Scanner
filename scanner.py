@@ -27,11 +27,11 @@ def build_prompt(cfg: dict) -> str:
     sites = "\n".join(f"- {s}" for s in cfg["sites"])
     return f"""You are a carbon market hedge fund news analyst. Today is {date.today().isoformat()}.
 
-Visit and read the following news sites:
-{sites}
-
 My context — only report what is relevant to this:
 {cfg["context"]}
+
+Visit and read the following news sites:
+{sites}
 
 Instructions:
 - Fetch each site and focus on articles from the last 24-48 hours.
