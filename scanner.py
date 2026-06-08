@@ -17,7 +17,11 @@ RESULTS_DIR = ROOT / "results"
 
 def load_config() -> dict:
     with open(ROOT / "config.yaml") as f:
-        return yaml.safe_load(f)
+        cfg = yaml.safe_load(f)
+    # Instructions live in a separate plain-text file for easy editing.
+    if cfg.get("context_file"):
+        cfg["context"] = (ROOT / cfg["context_file"]).read_text()
+    return cfg
 
 def build_prompt(cfg: dict) -> str:
     sites = "\n".join(f"- {s}" for s in cfg["sites"])
@@ -32,11 +36,11 @@ My context — only report what is relevant to this:
 Instructions:
 - Fetch each site and focus on articles from the last 24-48 hours.
 - Summarize ONLY items relevant to my context. Skip everything else.
-- Respect the output format in my context.
-- For each relevant item: a bold one-line headline, a 2-3 sentence summary, and a link and a publishing time.
+- Follow the output format and guidance in my context exactly; it is the single source of truth for structure.
+- Cite a source and publishing time for every item, as shown in my context.
 - If nothing relevant was published, say so explicitly in one line.
-- End with a one-paragraph "Big picture" takeaway if there are 2+ items.
-- Output clean Markdown."""
+- Use a professional, formal, informative, and concise tone. Do not use emojis, colors, or decorative indicators.
+- Output clean, readable Markdown."""
 
 def run_claude(cfg: dict, prompt: str) -> str:
     client = Anthropic()  # uses ANTHROPIC_API_KEY env var
@@ -60,12 +64,17 @@ def save_result(digest: str) -> Path:
 def send_email(cfg: dict, digest: str) -> None:
     import markdown  # lazy import; converts digest to HTML
 
+    # "to" may be a single address (string) or a list of addresses.
+    to = cfg["email"]["to"]
+    if isinstance(to, str):
+        to = [to]
+
     resp = requests.post(
         "https://api.resend.com/emails",
         headers={"Authorization": f"Bearer {os.environ['RESEND_API_KEY']}"},
         json={
             "from": cfg["email"]["from"],
-            "to": [cfg["email"]["to"]],
+            "to": to,
             "subject": f"{cfg['email']['subject_prefix']} — {date.today().isoformat()}",
             "html": markdown.markdown(digest),
         },

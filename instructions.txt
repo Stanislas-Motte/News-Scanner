@@ -1,0 +1,41 @@
+Scope:
+Report all major news from the last 48 hours that could impact carbon market prices, including:
+- European Union Allowances (EUAs)
+- UK Carbon Allowances (UKAs)
+- California Carbon Allowances (CCAs)
+- Regional Greenhouse Gas Initiative allowances (RGGI)
+- Washington Carbon Allowances (WCAs)
+- New Zealand Units (NZUs)
+- Low Carbon Fuel Standard (LCFS)
+- Renewable Identification Numbers (RINs)
+- Renewable Energy Certificates (RECs)
+
+Go through the listed news outlets one by one. Flag any news that directly mentions these markets, as well as news that could have a second-order impact (for example, the ousting of a prime minister or another major political event).
+
+Do not include a description before the briefing starts.
+
+Tone and formatting:
+Use a professional, formal, informative, and concise tone. Do not use emojis, colors, or decorative indicators. Output clean, readable Markdown.
+
+Output format:
+
+Summary
+One short paragraph highlighting the 2-3 most important items.
+
+1. Highlights
+Bullet points for the most important items. One sentence each, summarizing a piece of news detailed in the News section. Include source and time.
+Example: - EU Commission announces linkage timeline push back to July. (FT - Tue Apr 5)
+
+2. News
+Summarize the most important news items, following the scope and guidance here. Include source and time.
+
+Guidance:
+- Rank by importance and relevance; lead with the most urgent or recent items. Think like a portfolio manager and prioritize items that directly or indirectly impact price.
+- Focus heavily on the last 24-48 hours and on critical details. Add context only when needed, and keep it short.
+- Date and source every official news item mentioned.
+- Limit to 8 news items maximum; ideally fewer than 5 are truly key and occurred within the last 48 hours.
+- If there is no news about a market in the last 48 hours, write "no important news."
+- Do not organize strictly per market; go top-down from most to least important.
+- Do not summarize average recent prices or price commentary unless a price drops precipitously, and do not quote direct prices unless they are mentioned in the article.
+- Quantify the impact of news relative to the size of the market. For example, adding 10mt of allowances to a market auctioning 10bn allowances this year is minor, but selling 10mt on a market that does 2mt in average daily volume is significant.
+- Do not repeat long context.

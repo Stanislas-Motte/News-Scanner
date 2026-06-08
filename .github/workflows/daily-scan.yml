@@ -2,7 +2,7 @@ name: Daily News Scan
 
 on:
   schedule:
-    - cron: "0 7 * * *"  # 07:00 UTC daily (09:00 Paris in summer)
+    - cron: "0 5 * * *"  # 05:00 UTC daily (07:00 Paris in summer)
   workflow_dispatch: {}   # allows manual runs from the Actions tab
 
 permissions:

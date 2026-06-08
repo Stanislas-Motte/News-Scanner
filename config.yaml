@@ -1,50 +1,9 @@
 # --- Edit this file to control what the scanner does ---
 
-# The context/lens through which news is filtered and summarized
-context: >
-  Instructions:
-  I am interested in all major news over the last 48 hours that could have an impact on the price of carbon markets including: 
-  European Union Allowances (EUAs)
-  UK Carbon Allowances (UKAs)
-  California Carbon Allowances (CCAs)
-  Regional Grenhouse Gas Initiative Carbon Allowances (RGGI)
-  Washington Carbon Allowances (WCAs)
-  New Zealeand Units (NZUs)
-  Low Carbon Fuel Standard (LCFS)
-  Renewable Identification Numbers (RINs)
-  Renewable Energy Certificates (RECs)
+# The context/lens through which news is filtered and summarized.
+# Edit the instructions in the plain-text file referenced below.
+context_file: instructions.txt
 
-  Go through the news outlets mentioned one by one and scan for any news that directly mentions
-  these markets and flag it or any news that could have a second order impact on these markets.
-  For example any news related to the ousting of a prime minister or something massice politically could have a second order impact.
-  Don't include a short description before the briefing starts.
-  
-  Output format description:
-  1. Highlights
-  Bullets for most important items.
-  One sentence summarizing a piece of news detailed in Part 2.
-  Include Source and Time it came out.
-  Example of one bullet: - EU Commissions announces linkage timeline push back to July. (FT-Tue Apr 5).
-
-  2. News
-  Summarize the most important news items as per stated is instructions and keeping count of General Guidance principles below.
-  Include Source and Time it came out.
-
-  --- End of format description
-
-  General Guidance:
-  Rank by order of importance and relevance. Focus on any immediate or recent news first if something is urgent. 
-  Think like a portfolio manager, focus on items that directly or indirectly impact price first.
-  Focus on critical details. Be concise in your summaries. Provide additional context if needed but keep short.
-  Date and source every official news you mention is relevant in the last 24-48 hours. Be precise and concise. 
-  Limit to 8 total news items max, ideally less than 5 are truly key and happened within the last 48 hours.
-  If there is no news about a market in last 48 hours you can write no important news.
-  Don’t organize per market necessarily, go top down from what you consider most to least important.
-  Don't summarize average recent prices or price commentary unless price drops precipitously.
-  Focus heavily on last 48 hours. If there is no news about a market in last 48 hours you can write no important news.
-  Try to quantify the impact of news relative to the size of the market. For example, if 10mt of allowances are being added to a ceiling price of a market that is auctioning 10bn allowances this year, it isn’t actually a big deal. But if someone sells 10mt on a market that does 2mt in average daily volume that is a big deal.
-  Don’t summarize long context everytime. No need to go looking for or quote direct prices unless directly mentioned in article
-  
 sites:
   # --- Original ---
   - https://www.reuters.com/sustainability/climate-energy/
@@ -82,10 +41,12 @@ sites:
 
 # Email settings
 email:
-  to: motte.stanislas@gmail.com
+  # Add one line per recipient. All recipients are visible to each other.
+  to:
+    - motte.stanislas@gmail.com
   from: "News Scanner <onboarding@resend.dev>"  # works without domain setup
   subject_prefix: "Daily Carbon Markets Digest"
 
 # Claude model to use
 model: claude-sonnet-4-6
-max_tokens: 5000
+max_tokens: 4000
