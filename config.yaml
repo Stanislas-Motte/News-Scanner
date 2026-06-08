@@ -48,7 +48,7 @@ email:
   subject_prefix: "Daily Carbon Markets Digest"
 
 # Claude model to use
-model: claude-haiku-4-5
+model: claude-sonnet-4-6
 max_tokens: 2700
 
 # Max number of web searches Claude may run per digest (broad / second-order
