@@ -4,7 +4,7 @@ and stores the result in results/YYYY-MM-DD.md."""
 
 import os
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import requests
@@ -25,7 +25,9 @@ def load_config() -> dict:
 
 def build_prompt(cfg: dict) -> str:
     sites = "\n".join(f"- {s}" for s in cfg["sites"])
-    return f"""You are a carbon market hedge fund news analyst. Today is {date.today().isoformat()}.
+    now = datetime.now(timezone.utc)
+    return f"""You are a carbon market hedge fund news analyst.
+The current time is {now:%Y-%m-%d %H:%M} UTC.
 
 My context — only report what is relevant to this:
 {cfg["context"]}
@@ -34,12 +36,14 @@ Visit and read the following news sites:
 {sites}
 
 Instructions:
-- Fetch each site and focus on articles from the last 24-48 hours.
+- Only consider articles published within the last 48 hours relative to the current time above. Ignore anything older.
 - Summarize ONLY items relevant to my context. Skip everything else.
 - Follow the output format and guidance in my context exactly; it is the single source of truth for structure.
-- Cite a source and publishing time for every item, as shown in my context.
+- For every item, include the publishing time and a clickable Markdown link to the source article.
+- Do not write any preamble, introduction, or note (such as "Here is the summary"); start directly with the Highlights section.
 - If nothing relevant was published, say so explicitly in one line.
 - Use a professional, formal, informative, and concise tone. Do not use emojis, colors, or decorative indicators.
+- Keep the digest concise — about two-thirds the length of a typical summary, while conveying the same information.
 - Output clean, readable Markdown."""
 
 def run_claude(cfg: dict, prompt: str) -> str:
