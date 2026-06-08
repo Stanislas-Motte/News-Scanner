@@ -48,5 +48,15 @@ email:
   subject_prefix: "Daily Carbon Markets Digest"
 
 # Claude model to use
-model: claude-sonnet-4-6
+model: claude-haiku-4-5
 max_tokens: 2700
+
+# Max number of web searches Claude may run per digest (broad / second-order
+# topic coverage). Each one costs a per-search fee plus the tokens it pulls in.
+web_search_max_uses: 15
+
+# Max number of page fetches per digest. web_fetch reads a specific URL directly,
+# so this is how Claude covers the listed sites one by one. Set above the number
+# of sites to leave headroom for following article links. Higher = more coverage,
+# more cost.
+web_fetch_max_uses: 20

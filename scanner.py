@@ -32,10 +32,12 @@ The current time is {now:%Y-%m-%d %H:%M} UTC.
 My context — only report what is relevant to this:
 {cfg["context"]}
 
-Visit and read the following news sites:
+News sites to cover:
 {sites}
 
 Instructions:
+- Use the web_fetch tool to read each listed news site directly so every source is covered. Follow through to individual article pages when a headline looks relevant.
+- Use the web_search tool for broad or second-order topics (e.g. major political events) and to catch relevant stories not on the listed sites.
 - Only consider articles published within the last 48 hours relative to the current time above. Ignore anything older.
 - Summarize ONLY items relevant to my context. Skip everything else.
 - Follow the output format and guidance in my context exactly; it is the single source of truth for structure.
@@ -51,7 +53,14 @@ def run_claude(cfg: dict, prompt: str) -> str:
     response = client.messages.create(
         model=cfg["model"],
         max_tokens=cfg["max_tokens"],
-        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 20}],
+        tools=[
+            # _20260209 adds dynamic filtering: search results are filtered before
+            # entering the context window, cutting input tokens (the dominant cost).
+            {"type": "web_search_20260209", "name": "web_search",
+             "max_uses": cfg.get("web_search_max_uses", 15)},
+            {"type": "web_fetch_20260209", "name": "web_fetch",
+             "max_uses": cfg.get("web_fetch_max_uses", 30)},
+        ],
         messages=[{"role": "user", "content": prompt}],
     )
     # Concatenate all text blocks (web search responses interleave tool blocks)
