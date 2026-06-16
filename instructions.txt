@@ -1,5 +1,5 @@
 Scope:
-Report major news from the last 48 hours (as of the time of running) that could impact carbon market prices, including:
+Report headlines from the last 48 hours (as of the time of running) that could impact carbon market prices, including:
 - European Union Allowances (EUAs)
 - UK Carbon Allowances (UKAs)
 - California Carbon Allowances (CCAs)
@@ -10,30 +10,30 @@ Report major news from the last 48 hours (as of the time of running) that could 
 - Renewable Identification Numbers (RINs)
 - Renewable Energy Certificates (RECs)
 
-Flag news that directly mentions these markets, as well as news with a plausible second-order impact (for example, the ousting of a prime minister or another major political event).
+Flag headlines that directly mention these markets, as well as headlines with a plausible second-order impact (for example, a major election in California, the UK, or the EU, or a significant energy or climate policy shift).
 
 Source priority:
-Do not over-rely on Carbon Pulse or other specialist trade press, and do not regurgitate their articles. It is more important not to miss relevant stories on the major financial and general outlets (Reuters, FT, Bloomberg, Politico, The Guardian) and the primary regulator sources.
+Focus on major financial and general outlets only (FT, WSJ, Bloomberg, Reuters, Politico Europe, The Guardian, NYT, etc.). Do not cite or rely on specialist carbon trade press.
 
 Tone and formatting:
 Professional, formal, informative, and concise. No emojis, colors, or decorative indicators. Clean, readable Markdown. Start directly with the Highlights section; do not write any introduction or note such as "Here is the summary".
 
-Output format (in this order):
+Output format:
 
-1. Highlights
-One-sentence bullets for the most important items, each summarizing an item detailed in the News section.
+## Highlights
 
-2. News
-Concise summaries of the most important items. For every item, include the publishing time and a clickable Markdown link to the source article, e.g. [FT](https://example.com/article).
+One bullet per relevant headline, ranked by importance and price impact:
+- [Outlet](article-url) — Headline as published. (Published: Mon Jun 8, 14:30 UTC) — One sentence on why it matters for ETS.
 
-3. Summary
-One short paragraph highlighting the 2-3 most important items.
+If nothing relevant was published at all, respond with exactly one line:
+No relevant headlines in the last 48 hours.
 
 Guidance:
 - Strictly limit to the last 48 hours as of the time of running. Ignore anything older.
 - Rank top-down by importance and price impact; lead with the most urgent items. Think like a portfolio manager.
-- Limit to 10 news items maximum; ideally fewer than 5 are truly key.
-- Keep summaries tight: communicate the same information in roughly two-thirds the usual length. Add context only when needed.
-- Do not organize per market; cover only markets with relevant news. If nothing relevant was published at all, say so in one line.
-- Quantify impact relative to market size. For example, adding 10mt of allowances to a market auctioning 10bn this year is minor, but selling 10mt where average daily volume is 2mt is significant.
-- Do not summarize prices or price commentary unless a price moves sharply, and do not quote prices unless stated in the article.
+- Limit to 10 headlines maximum; ideally fewer than 5 are truly key.
+- Report the headline as published; do not paraphrase into a full article summary.
+- Do not follow article links or fetch individual articles — headlines from section pages are sufficient.
+- Do not organize per market; cover only markets with relevant headlines.
+- Quantify impact relative to market size when the headline implies a supply, demand, or policy change.
+- Do not quote prices unless the headline itself states a price move.

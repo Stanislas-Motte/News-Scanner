@@ -1,62 +1,48 @@
-# --- Edit this file to control what the scanner does ---
+# --- Edit this file to control what Headline Watcher does ---
 
-# The context/lens through which news is filtered and summarized.
-# Edit the instructions in the plain-text file referenced below.
 context_file: instructions.txt
 
-sites:
-  # --- Original ---
-  - https://www.reuters.com/sustainability/climate-energy/
-  - https://www.euractiv.com/sections/emissions-trading-scheme/
+headline_sources:
+  # Global / Anglo
   - https://www.ft.com
-  - https://www.bloomberg.com/green
+  - https://www.wsj.com
+  - https://www.bloomberg.com
+  - https://www.reuters.com
+  - https://www.economist.com
 
-  # --- Specialist carbon / commodity trade press (highest signal) ---
-  - https://carbon-pulse.com/
-  - https://ccarbon.info/
-  - https://www.qcintel.com/carbon            # Quantum Commodity Intelligence
-  - https://www.montelnews.com/
-  - https://www.argusmedia.com/en/emissions
-  - https://www.icis.com/explore/commodities/energy/carbon/
-  - https://www.spglobal.com/commodityinsights/en   # Platts / Commodity Insights
-  - https://www.opisnet.com/                  # OPIS (strong on LCFS/RIN/RFS)
-  - https://carbonherald.com/
+  # United States
+  - https://www.nytimes.com/section/business
+  - https://www.nytimes.com/section/climate
+  - https://www.washingtonpost.com/politics/
+  - https://www.cnbc.com
 
-  # --- Major general / financial outlets with carbon desks ---
-  - https://www.theguardian.com/environment/carbon-emissions
-  - https://www.politico.eu/section/energy/
-  - https://www.climatechangenews.com/        # Climate Home News
-  - https://www.bnef.com/                      # BloombergNEF (research, gated)
+  # United Kingdom
+  - https://www.bbc.com/news/business
+  - https://www.theguardian.com/uk/business
+  - https://www.thetimes.co.uk
 
-  # --- Think tanks / advocacy / data (slower, but useful for mechanism & policy) ---
-  - https://ember-energy.org/                  # rebranded from ember-climate.org
-  - https://carbonmarketwatch.org/
-  - https://icapcarbonaction.com/en/news       # ICAP — good for cross-system tracking
+  # European Union / Europe
+  - https://www.politico.eu
+  - https://www.handelsblatt.com
+  - https://www.lesechos.fr
+  - https://www.ilsole24ore.com
+  - https://elpais.com/economia/
 
-  # --- Primary / regulator sources (authoritative, no editorial lag) ---
-  - https://climate.ec.europa.eu/news_en       # EU Commission DG CLIMA
-  - https://ww2.arb.ca.gov/news                 # CARB (LCFS, CCA)
-  - https://www.rggi.org/                       # RGGI
-
-
-# Email settings
 email:
-  # Add one line per recipient. All recipients are visible to each other.
   to:
     - motte.stanislas@gmail.com
-  from: "News Scanner <onboarding@resend.dev>"  # works without domain setup
-  subject_prefix: "Daily Carbon Markets Digest"
+  from: "News Scanner <onboarding@resend.dev>"
+  subject_prefix: "Headline Watcher"
 
-# Claude model to use
-model: claude-sonnet-4-6
-max_tokens: 2700
+model: claude-haiku-4-5
+max_tokens: 800
 
-# Max number of web searches Claude may run per digest (broad / second-order
-# topic coverage). Each one costs a per-search fee plus the tokens it pulls in.
-web_search_max_uses: 15
+# Tool budgets — tuned for <$1/run and <10 min
+web_fetch_max_uses: 17
+web_fetch_max_content_tokens: 4000
+web_search_max_uses: 1
 
-# Max number of page fetches per digest. web_fetch reads a specific URL directly,
-# so this is how Claude covers the listed sites one by one. Set above the number
-# of sites to leave headroom for following article links. Higher = more coverage,
-# more cost.
-web_fetch_max_uses: 20
+# Guardrails
+max_cost_usd: 1.00
+max_runtime_seconds: 540
+api_timeout_seconds: 480

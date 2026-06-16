@@ -1,16 +1,17 @@
-name: Daily News Scan
+name: Daily Headline Watcher
 
 on:
   schedule:
     - cron: "0 5 * * *"  # 05:00 UTC daily (07:00 Paris in summer)
-  workflow_dispatch: {}   # allows manual runs from the Actions tab
+  workflow_dispatch: {}
 
 permissions:
-  contents: write  # needed to commit results back
+  contents: write
 
 jobs:
   scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
@@ -21,11 +22,11 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Run scanner
+      - name: Run Headline Watcher
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-        run: python scanner.py
+        run: python headline_watcher.py
 
       - name: Commit result
         run: |
