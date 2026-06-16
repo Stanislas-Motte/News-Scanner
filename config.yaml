@@ -46,6 +46,9 @@ strategy: search
 model: claude-sonnet-4-6
 max_tokens: 1000
 
+# How far back to look for headlines.
+lookback_hours: 24
+
 # Cap SDK retries so a string of rate-limited attempts can't blow past the
 # workflow's 10-minute timeout (each retry can take up to api_timeout_seconds).
 max_retries: 1

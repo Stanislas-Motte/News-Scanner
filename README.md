@@ -43,6 +43,12 @@ python headline_watcher.py
 
 (`python scanner.py` also works — it delegates to Headline Watcher.)
 
+## Email format
+
+- **Subject** carries a colored severity dot reflecting the highest potential carbon-price impact: 🔴 high / immediate, 🟠 moderate, 🟡 minor / second-order, 🟢 none. The model assigns this on every run.
+- **Body header** shows the exact run time (UTC) and the lookback window, e.g. `Lookback: last 24h (since ...)`.
+- Lookback defaults to 24 hours (`lookback_hours` in `config.yaml`).
+
 ## How it gathers headlines
 
 Two strategies, set by `strategy` in `config.yaml`:

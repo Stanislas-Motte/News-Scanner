@@ -1,5 +1,5 @@
 Scope:
-Report headlines from the last 48 hours (as of the time of running) that could impact carbon market prices, including:
+Report headlines from the last 24 hours (as of the time of running) that could impact carbon market prices, including:
 - European Union Allowances (EUAs)
 - UK Carbon Allowances (UKAs)
 - California Carbon Allowances (CCAs)
@@ -15,25 +15,34 @@ Flag headlines that directly mention these markets, as well as headlines with a 
 Source priority:
 Focus on major financial and general outlets only (FT, WSJ, Bloomberg, Reuters, Politico Europe, The Guardian, NYT, etc.). Do not cite or rely on specialist carbon trade press.
 
-Tone and formatting:
-Professional, formal, informative, and concise. No emojis, colors, or decorative indicators. Clean, readable Markdown. Start directly with the Highlights section; do not write any introduction or note such as "Here is the summary". Never describe your process, tools, fetch errors, or retries — output headlines only.
+Severity rating:
+Assess the single highest potential carbon-price impact across all items and rate it:
+- RED: at least one item likely to move a carbon market sharply or immediately (e.g. a major policy decision, cap or supply change, market linkage, court ruling, or election result with direct ETS consequences).
+- ORANGE: item(s) with a clear but moderate, or not-yet-certain, price impact.
+- YELLOW: only minor or second-order relevance; unlikely to move prices on its own.
+- GREEN: no relevant news, or nothing likely to affect prices.
 
-Output format:
+Tone and formatting:
+Professional, formal, informative, and concise. No decorative indicators. Clean, readable Markdown. Never describe your process, tools, fetch errors, or retries — output the severity line and headlines only.
+
+Output format (exactly, in this order):
+
+SEVERITY: <RED|ORANGE|YELLOW|GREEN>
 
 ## Highlights
 
 One bullet per relevant headline, ranked by importance and price impact:
 - [Outlet](article-url) — Headline as published. (Published: Mon Jun 8, 14:30 UTC) — One sentence on why it matters for ETS.
 
-If nothing relevant was published at all, respond with exactly one line:
-No relevant headlines in the last 48 hours.
+If nothing relevant was published, output the SEVERITY line (GREEN) followed by exactly one line:
+No relevant headlines in the last 24 hours.
 
 Guidance:
-- Strictly limit to the last 48 hours as of the time of running. Ignore anything older.
+- Strictly limit to the last 24 hours as of the time of running. Ignore anything older.
 - Rank top-down by importance and price impact; lead with the most urgent items. Think like a portfolio manager.
 - Limit to 10 headlines maximum; ideally fewer than 5 are truly key.
 - Report the headline as published; do not paraphrase into a full article summary.
-- Do not follow article links or fetch individual articles — headlines from section pages are sufficient.
+- Do not follow article links — headlines from search results or section pages are sufficient.
 - Do not organize per market; cover only markets with relevant headlines.
 - Quantify impact relative to market size when the headline implies a supply, demand, or policy change.
 - Do not quote prices unless the headline itself states a price move.

@@ -23,6 +23,13 @@ MODEL_RATES: dict[str, tuple[float, float]] = {
 }
 WEB_SEARCH_COST_USD = 0.01
 
+# Colored dot shown in the email subject, by potential carbon-price impact.
+SEVERITY_DOTS = {"RED": "🔴", "ORANGE": "🟠", "YELLOW": "🟡", "GREEN": "🟢"}
+
+
+def severity_dot(severity: str | None) -> str:
+    return SEVERITY_DOTS.get((severity or "").upper(), "⚪")
+
 
 @dataclass
 class Usage:
@@ -178,21 +185,29 @@ def format_usage_footer(usage: Usage, cost: float, elapsed_seconds: float) -> st
     )
 
 
-def send_email(cfg: dict, digest: str, footer: str = "") -> None:
+def send_email(
+    cfg: dict,
+    digest: str,
+    footer: str = "",
+    header: str = "",
+    severity: str | None = None,
+) -> None:
     import markdown
 
     to = cfg["email"]["to"]
     if isinstance(to, str):
         to = [to]
 
-    body = digest + footer
+    dot = severity_dot(severity)
+    subject = f"{dot} {cfg['email']['subject_prefix']} — {date.today().isoformat()}"
+    body = (f"{header}\n\n" if header else "") + digest + footer
     resp = requests.post(
         "https://api.resend.com/emails",
         headers={"Authorization": f"Bearer {os.environ['RESEND_API_KEY']}"},
         json={
             "from": cfg["email"]["from"],
             "to": to,
-            "subject": f"{cfg['email']['subject_prefix']} — {date.today().isoformat()}",
+            "subject": subject,
             "html": markdown.markdown(body),
         },
         timeout=30,
