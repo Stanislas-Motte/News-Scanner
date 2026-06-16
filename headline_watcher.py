@@ -44,11 +44,12 @@ Critical rules:
 - Do not follow article links or fetch individual articles.
 - Scan visible headlines only from the section page returned."""
     else:
-        method = f"""Use the web_search tool to find recent headlines. Results are restricted to these major outlets:
+        method = f"""Use the web_search tool to find recent headlines. Strongly prefer these major financial and general outlets:
 {source_list}
 
 Critical rules:
 - Run a small number of targeted web_search queries (you have a limited budget) covering both the carbon/ETS markets in my context and major second-order events (elections, energy or climate policy, geopolitical shocks) in the US, UK, and EU.
+- Prefer the outlets above and other major outlets. Do NOT cite specialist carbon trade press (e.g. Carbon Pulse, Argus, ICIS, Montel, OPIS, Quantum Commodity Intelligence).
 - Do not waste queries; combine related topics where sensible."""
 
     return f"""You are a carbon market hedge fund headline analyst.

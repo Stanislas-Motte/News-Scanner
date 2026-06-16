@@ -51,8 +51,23 @@ max_tokens: 1000
 max_retries: 1
 
 # Search strategy (default) — older tool type avoids the code-execution path.
+# Note: we do NOT restrict search to the outlet domains above, because most of
+# them block Anthropic's crawler (allowed_domains would 400). Instead the prompt
+# steers toward major outlets, and the blocklist below removes carbon trade press.
 web_search_tool_type: web_search_20250305
 web_search_max_uses: 8
+
+# Keep specialist carbon trade press out of broad search results.
+search_blocked_domains:
+  - carbon-pulse.com
+  - ccarbon.info
+  - qcintel.com
+  - montelnews.com
+  - argusmedia.com
+  - icis.com
+  - opisnet.com
+  - carbonherald.com
+  - climatechangenews.com
 
 # Fetch strategy (only used when strategy: fetch).
 web_fetch_tool_type: web_fetch_20250910
