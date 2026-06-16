@@ -72,33 +72,44 @@ def _domains_from_sources(sources: list[str]) -> list[str]:
 
 
 def build_tools(cfg: dict, *, fetch_max: int | None = None) -> list[dict]:
-    """Build tool definitions. Use allowed_callers=['direct'] to prevent
-    code-execution batching (which hits server-side rate limits)."""
+    """Build tool definitions.
+
+    Default strategy is "search": robust against paywalls/anti-bot because it
+    uses Anthropic's indexed results scoped to the outlet domains. "fetch" reads
+    pages directly (often blocked by FT/WSJ/Bloomberg).
+
+    Older tool types (web_search_20250305 / web_fetch_20250910) are used on
+    purpose: they do not enable the code-execution filtering path, so there is no
+    programmatic caller to rate-limit and no need for `allowed_callers`.
+    """
     tools: list[dict] = []
-    fetch_max = fetch_max if fetch_max is not None else cfg.get("web_fetch_max_uses", 0)
-    fetch_type = cfg.get("web_fetch_tool_type", "web_fetch_20250910")
-    if fetch_max:
-        tool: dict = {
-            "type": fetch_type,
-            "name": "web_fetch",
-            "max_uses": fetch_max,
-            "allowed_callers": ["direct"],
-        }
-        if cfg.get("web_fetch_max_content_tokens"):
-            tool["max_content_tokens"] = cfg["web_fetch_max_content_tokens"]
-        sources = cfg.get("headline_sources") or cfg.get("sites") or []
-        if sources:
-            tool["allowed_domains"] = _domains_from_sources(sources)
-        tools.append(tool)
-    search_max = cfg.get("web_search_max_uses", 0)
-    if search_max:
-        search_type = cfg.get("web_search_tool_type", "web_search_20250305")
-        tools.append({
-            "type": search_type,
-            "name": "web_search",
-            "max_uses": search_max,
-            "allowed_callers": ["direct"],
-        })
+    sources = cfg.get("headline_sources") or cfg.get("sites") or []
+    strategy = cfg.get("strategy", "search")
+
+    if strategy == "fetch":
+        fmax = fetch_max if fetch_max is not None else cfg.get("web_fetch_max_uses", 0)
+        if fmax:
+            tool: dict = {
+                "type": cfg.get("web_fetch_tool_type", "web_fetch_20250910"),
+                "name": "web_fetch",
+                "max_uses": fmax,
+            }
+            if cfg.get("web_fetch_max_content_tokens"):
+                tool["max_content_tokens"] = cfg["web_fetch_max_content_tokens"]
+            if sources:
+                tool["allowed_domains"] = _domains_from_sources(sources)
+            tools.append(tool)
+    else:
+        smax = cfg.get("web_search_max_uses", 8)
+        if smax:
+            tool = {
+                "type": cfg.get("web_search_tool_type", "web_search_20250305"),
+                "name": "web_search",
+                "max_uses": smax,
+            }
+            if sources:
+                tool["allowed_domains"] = _domains_from_sources(sources)
+            tools.append(tool)
     return tools
 
 
@@ -108,8 +119,9 @@ def run_claude(
     *,
     fetch_max: int | None = None,
 ) -> tuple[str, Usage]:
-    timeout = cfg.get("api_timeout_seconds", 480)
-    client = Anthropic(timeout=timeout)
+    timeout = cfg.get("api_timeout_seconds", 240)
+    max_retries = cfg.get("max_retries", 1)
+    client = Anthropic(timeout=timeout, max_retries=max_retries)
     tools = build_tools(cfg, fetch_max=fetch_max)
     if not tools:
         raise ValueError("At least one tool (web_fetch or web_search) must be configured")

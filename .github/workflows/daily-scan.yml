@@ -29,6 +29,7 @@ jobs:
         run: python headline_watcher.py
 
       - name: Commit result
+        if: always()  # still commit usage.log / partial result on failure (keeps Actions alive)
         run: |
           git config user.name "news-scanner-bot"
           git config user.email "actions@github.com"

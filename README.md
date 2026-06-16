@@ -43,22 +43,29 @@ python headline_watcher.py
 
 (`python scanner.py` also works — it delegates to Headline Watcher.)
 
+## How it gathers headlines
+
+Two strategies, set by `strategy` in `config.yaml`:
+
+- **`search`** (default) — uses Anthropic's `web_search`, scoped to the outlet domains. This survives paywalls and anti-bot walls (FT, WSJ, Bloomberg) because it reads indexed results rather than scraping pages.
+- **`fetch`** — reads each section page directly in small batches. Often blocked by paywalled sites; use only for open outlets.
+
 ## Cost and runtime
 
-Typical run: **$0.25–0.40** on Sonnet 4.6, **4–7 minutes**. Hard caps in `config.yaml`:
+Typical run: **$0.20–0.45** on Sonnet 4.6, **2–6 minutes**. Key caps in `config.yaml`:
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
-| `web_fetch_max_uses` | 17 | One fetch per source + buffer |
-| `web_fetch_max_content_tokens` | 4000 | Top-of-page only; prevents token bloat |
-| `web_search_max_uses` | 1 | Minimize $0.01/search fees |
-| `max_tokens` | 800 | Cap output length |
-| `max_cost_usd` | 1.00 | Warn if estimate exceeds budget |
+| `web_search_max_uses` | 8 | Search budget ($0.01 each) |
+| `max_tokens` | 1000 | Cap output length |
+| `max_retries` | 1 | Stop runaway retry/backoff under the 10-min job limit |
+| `api_timeout_seconds` | 240 | Per-request timeout |
+| `max_cost_usd` | 1.00 | Warn (post-run) if estimate exceeds budget |
 
 After each run, check stdout or `results/usage.log` for a line like:
 
 ```
-2026-06-16 | in=45000 out=400 fetch=16 search=0 | est=$0.28 | model=claude-sonnet-4-6 | elapsed=312s
+2026-06-16 | in=45000 out=400 fetch=0 search=6 | est=$0.28 | model=claude-sonnet-4-6 | elapsed=190s
 ```
 
 Set a monthly spend alert at [console.anthropic.com](https://console.anthropic.com).
@@ -66,6 +73,7 @@ Set a monthly spend alert at [console.anthropic.com](https://console.anthropic.c
 ## Notes
 
 - GitHub may delay scheduled runs by 5–15 minutes.
-- Scheduled workflows pause after 60 days without repo activity; the daily result commits prevent this.
+- Scheduled workflows pause after 60 days without repo activity; the commit step runs even on failure (`if: always()`) to keep the repo active and preserve `usage.log`.
 - The workflow has a 10-minute hard timeout.
-- Uses Sonnet 4.6 (Haiku does not support web_fetch/web_search without programmatic tool calling).
+- Uses Sonnet 4.6 (Haiku does not support these web tools without programmatic tool calling).
+- `max_cost_usd` only warns after the fact; the real cost controls are `web_search_max_uses` and `max_tokens`.

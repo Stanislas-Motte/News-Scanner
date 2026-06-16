@@ -36,19 +36,31 @@ email:
   from: "News Scanner <onboarding@resend.dev>"
   subject_prefix: "Headline Watcher"
 
-model: claude-sonnet-4-6
-max_tokens: 800
+# Strategy:
+#   "search" (default) — uses Anthropic's indexed results scoped to the outlet
+#     domains above. Survives paywalls/anti-bot (FT, WSJ, Bloomberg) far better
+#     than fetching pages directly. Recommended.
+#   "fetch" — reads each section page directly (often blocked by paywalled sites).
+strategy: search
 
-# Tool config — use 20250910 (no code-execution filtering path) with direct calls only
+model: claude-sonnet-4-6
+max_tokens: 1000
+
+# Cap SDK retries so a string of rate-limited attempts can't blow past the
+# workflow's 10-minute timeout (each retry can take up to api_timeout_seconds).
+max_retries: 1
+
+# Search strategy (default) — older tool type avoids the code-execution path.
+web_search_tool_type: web_search_20250305
+web_search_max_uses: 8
+
+# Fetch strategy (only used when strategy: fetch).
 web_fetch_tool_type: web_fetch_20250910
 web_fetch_max_uses: 11
 web_fetch_max_content_tokens: 2500
-web_search_max_uses: 0
-
-# Fetch sources in small batches to avoid rate limits and context blow-up
 source_batch_size: 4
 
 # Guardrails
 max_cost_usd: 1.00
 max_runtime_seconds: 540
-api_timeout_seconds: 180
+api_timeout_seconds: 240
