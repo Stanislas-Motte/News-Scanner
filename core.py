@@ -56,32 +56,61 @@ def load_config(config_path: Path | None = None) -> dict:
     return cfg
 
 
-def build_tools(cfg: dict) -> list[dict]:
+def _domains_from_sources(sources: list[str]) -> list[str]:
+    from urllib.parse import urlparse
+
+    domains: set[str] = set()
+    for url in sources:
+        host = urlparse(url).netloc
+        if host.startswith("www."):
+            domains.add(host)
+            domains.add(host[4:])
+        else:
+            domains.add(host)
+            domains.add(f"www.{host}")
+    return sorted(domains)
+
+
+def build_tools(cfg: dict, *, fetch_max: int | None = None) -> list[dict]:
+    """Build tool definitions. Use allowed_callers=['direct'] to prevent
+    code-execution batching (which hits server-side rate limits)."""
     tools: list[dict] = []
-    fetch_max = cfg.get("web_fetch_max_uses", 0)
+    fetch_max = fetch_max if fetch_max is not None else cfg.get("web_fetch_max_uses", 0)
+    fetch_type = cfg.get("web_fetch_tool_type", "web_fetch_20250910")
     if fetch_max:
         tool: dict = {
-            "type": "web_fetch_20260209",
+            "type": fetch_type,
             "name": "web_fetch",
             "max_uses": fetch_max,
+            "allowed_callers": ["direct"],
         }
         if cfg.get("web_fetch_max_content_tokens"):
             tool["max_content_tokens"] = cfg["web_fetch_max_content_tokens"]
+        sources = cfg.get("headline_sources") or cfg.get("sites") or []
+        if sources:
+            tool["allowed_domains"] = _domains_from_sources(sources)
         tools.append(tool)
     search_max = cfg.get("web_search_max_uses", 0)
     if search_max:
+        search_type = cfg.get("web_search_tool_type", "web_search_20250305")
         tools.append({
-            "type": "web_search_20260209",
+            "type": search_type,
             "name": "web_search",
             "max_uses": search_max,
+            "allowed_callers": ["direct"],
         })
     return tools
 
 
-def run_claude(cfg: dict, prompt: str) -> tuple[str, Usage]:
+def run_claude(
+    cfg: dict,
+    prompt: str,
+    *,
+    fetch_max: int | None = None,
+) -> tuple[str, Usage]:
     timeout = cfg.get("api_timeout_seconds", 480)
     client = Anthropic(timeout=timeout)
-    tools = build_tools(cfg)
+    tools = build_tools(cfg, fetch_max=fetch_max)
     if not tools:
         raise ValueError("At least one tool (web_fetch or web_search) must be configured")
 
@@ -93,6 +122,15 @@ def run_claude(cfg: dict, prompt: str) -> tuple[str, Usage]:
     )
     text = "\n".join(b.text for b in response.content if b.type == "text")
     return text, Usage.from_response(response)
+
+
+def merge_usage(total: Usage, part: Usage) -> Usage:
+    return Usage(
+        input_tokens=total.input_tokens + part.input_tokens,
+        output_tokens=total.output_tokens + part.output_tokens,
+        web_fetch_requests=total.web_fetch_requests + part.web_fetch_requests,
+        web_search_requests=total.web_search_requests + part.web_search_requests,
+    )
 
 
 def estimate_cost(usage: Usage, model: str) -> float:

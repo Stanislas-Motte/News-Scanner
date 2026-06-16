@@ -3,30 +3,32 @@
 context_file: instructions.txt
 
 headline_sources:
-  # Global / Anglo
+  # Global / Anglo (tier 1 — highest signal)
   - https://www.ft.com
   - https://www.wsj.com
   - https://www.bloomberg.com
   - https://www.reuters.com
-  - https://www.economist.com
 
   # United States
   - https://www.nytimes.com/section/business
-  - https://www.nytimes.com/section/climate
   - https://www.washingtonpost.com/politics/
   - https://www.cnbc.com
 
   # United Kingdom
   - https://www.bbc.com/news/business
   - https://www.theguardian.com/uk/business
-  - https://www.thetimes.co.uk
 
   # European Union / Europe
   - https://www.politico.eu
   - https://www.handelsblatt.com
-  - https://www.lesechos.fr
-  - https://www.ilsole24ore.com
-  - https://elpais.com/economia/
+
+  # Run tier-2 sources on alternate days or add back once stable:
+  # - https://www.economist.com
+  # - https://www.nytimes.com/section/climate
+  # - https://www.thetimes.co.uk
+  # - https://www.lesechos.fr
+  # - https://www.ilsole24ore.com
+  # - https://elpais.com/economia/
 
 email:
   to:
@@ -37,12 +39,16 @@ email:
 model: claude-sonnet-4-6
 max_tokens: 800
 
-# Tool budgets — tuned for <$1/run and <10 min
-web_fetch_max_uses: 17
-web_fetch_max_content_tokens: 4000
-web_search_max_uses: 1
+# Tool config — use 20250910 (no code-execution filtering path) with direct calls only
+web_fetch_tool_type: web_fetch_20250910
+web_fetch_max_uses: 11
+web_fetch_max_content_tokens: 2500
+web_search_max_uses: 0
+
+# Fetch sources in small batches to avoid rate limits and context blow-up
+source_batch_size: 4
 
 # Guardrails
 max_cost_usd: 1.00
 max_runtime_seconds: 540
-api_timeout_seconds: 480
+api_timeout_seconds: 180
