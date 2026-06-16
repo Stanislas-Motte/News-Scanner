@@ -45,7 +45,7 @@ python headline_watcher.py
 
 ## Cost and runtime
 
-Typical run: **$0.08–0.20** on Haiku 4.5, **4–7 minutes**. Hard caps in `config.yaml`:
+Typical run: **$0.25–0.40** on Sonnet 4.6, **4–7 minutes**. Hard caps in `config.yaml`:
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
@@ -58,7 +58,7 @@ Typical run: **$0.08–0.20** on Haiku 4.5, **4–7 minutes**. Hard caps in `con
 After each run, check stdout or `results/usage.log` for a line like:
 
 ```
-2026-06-16 | in=45000 out=400 fetch=16 search=0 | est=$0.09 | model=claude-haiku-4-5 | elapsed=312s
+2026-06-16 | in=45000 out=400 fetch=16 search=0 | est=$0.28 | model=claude-sonnet-4-6 | elapsed=312s
 ```
 
 Set a monthly spend alert at [console.anthropic.com](https://console.anthropic.com).
@@ -68,4 +68,4 @@ Set a monthly spend alert at [console.anthropic.com](https://console.anthropic.c
 - GitHub may delay scheduled runs by 5–15 minutes.
 - Scheduled workflows pause after 60 days without repo activity; the daily result commits prevent this.
 - The workflow has a 10-minute hard timeout.
-- Switch `model` to `claude-sonnet-4-6` in config if Haiku misses headlines — still under $1 with the caps above.
+- Uses Sonnet 4.6 (Haiku does not support web_fetch/web_search without programmatic tool calling).

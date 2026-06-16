@@ -34,7 +34,7 @@ email:
   from: "News Scanner <onboarding@resend.dev>"
   subject_prefix: "Headline Watcher"
 
-model: claude-haiku-4-5
+model: claude-sonnet-4-6
 max_tokens: 800
 
 # Tool budgets — tuned for <$1/run and <10 min
