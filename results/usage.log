@@ -5,3 +5,4 @@
 2026-06-18 | in=143997 out=626 fetch=0 search=6 | est=$0.50 | model=claude-sonnet-4-6 | elapsed=22s
 2026-06-19 | in=231284 out=901 fetch=0 search=7 | est=$0.78 | model=claude-sonnet-4-6 | elapsed=33s
 2026-06-20 | in=118359 out=1123 fetch=0 search=6 | est=$0.43 | model=claude-sonnet-4-6 | elapsed=33s
+2026-06-21 | in=138653 out=647 fetch=0 search=6 | est=$0.49 | model=claude-sonnet-4-6 | elapsed=21s
